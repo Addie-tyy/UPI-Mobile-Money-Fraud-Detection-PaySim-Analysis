@@ -13,9 +13,7 @@ Explainability: SHAP (TreeExplainer)
 
 Environment: Python 3.10+, Jupyter / Google Colab
 
-
-
-End-to-End Methodology
+# End-to-End Methodology
 6.3M Raw Transactions (CSV)
             │
             ▼
@@ -49,6 +47,16 @@ End-to-End Methodology
 │ 4. Threshold Optimization     │ ──► Precision target: 95.0%
 │    & Business Calibration     │ ──► Optimal cutoff: 0.864
 └───────────────────────────────┘
+
+## Executive Summary & Business Impact
+
+| Metric / Decision Variable | Baseline Rule (`isFlaggedFraud`) | Honest Production Model (Model B @ 0.86 Threshold) | Net Delta / Impact |
+| :--- | :--- | :--- | :--- |
+| **Fraud Detection Rate (Recall)** | 0.19% (16 / 8,213) | **71.0%** (154 / 217 in Test) | **~370x improvement** |
+| **Operational Precision** | ~100% | **95.0%** | 1 false alert per 20 flags |
+| **False Positive Rate (FPR)** | ~0.000% | **0.011%** (8 false alerts in 74,783) | Minimal manual review bloat |
+| **Fraud Prevented (Test Set)** | ~₹0.23 Cr | **~₹22.6 Cr** (Avg ₹14.68L / fraud) | **+₹22.37 Cr recovered** |
+| **Remaining Loss Exposure** | ~₹120.3 Cr | **~₹9.2 Cr** (63 missed fraud cases) | Drastic risk mitigation |
 
 
 
