@@ -5,13 +5,13 @@ SQL-driven exploration, leakage-aware feature engineering, explainable ML, and a
 **Dataset:** [PaySim](https://www.kaggle.com/datasets/ealaxi/paysim1) (Kaggle) — 6.3M+ real transactions, standard academic mobile-money fraud benchmark.
 
 ## Core Tech Stack
-Data Engineering & Querying: SQLite3, Pandas, NumPy
+*Data Engineering & Querying:* SQLite3, Pandas, NumPy
 
-Machine Learning: Scikit-Learn, LightGBM / XGBoost
+*Machine Learning:* Scikit-Learn, LightGBM / XGBoost
 
-Explainability: SHAP (TreeExplainer)
+*Explainability:* SHAP (TreeExplainer)
 
-Environment: Python 3.10+, Jupyter / Google Colab
+*Environment:* Python 3.10+, Jupyter / Google Colab
 
 ## End-to-End Methodology
 
@@ -98,9 +98,10 @@ Default classification cutoffs ($p = 0.50$) generate excessive false alarms. The
 
 
 
-Honest Limitations & Production Considerations
-Synthetic Nature: PaySim does not reflect modern UPI features (device fingerprinting, VPA aliases, SIM binding, or tokenized flows).
+## Honest Limitations & Production Considerations
 
-Absence of Temporal Splits: The pipeline uses stratified random sampling. A live production engine requires out-of-time (OOT) validation splits to track adversarial drift.
+*Synthetic Nature:* PaySim does not reflect modern UPI features (device fingerprinting, VPA aliases, SIM binding, or tokenized flows).
 
-Financial Sizing: Dollar/Rupee fraud-loss figures represent sample accounting derived from test set totals to demonstrate metric conversion, not empirical real-world losses.
+*Absence of Temporal Splits:* The pipeline uses stratified random sampling. A live production engine requires out-of-time (OOT) validation splits to track adversarial drift.
+
+*Financial Sizing:* Dollar/Rupee fraud-loss figures represent sample accounting derived from test set totals to demonstrate metric conversion, not empirical real-world losses.
