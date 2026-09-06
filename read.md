@@ -1,4 +1,3 @@
-ReadMe.md
 # UPI/Mobile Money Fraud Detection — PaySim Analysis
 
 An end-to-end fraud analytics project simulating the kind of risk-analyst work done
