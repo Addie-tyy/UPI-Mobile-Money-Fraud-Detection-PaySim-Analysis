@@ -84,7 +84,7 @@ in detection capability.
 | Fraud missed | 63 | ~₹9.2 Cr still lost |
 | False positives | 8 of 74,783 | 0.011% false-positive rate |
 
-## Key findings (resume-ready)
+## Key findings
 
 - Explored 6.3M+ transactions via SQL (CTEs, window functions) to isolate fraud to
   2 of 5 transaction types before modeling.
