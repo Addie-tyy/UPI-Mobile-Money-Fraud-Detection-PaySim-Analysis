@@ -27,6 +27,55 @@ worth ~₹805 crore (NPCI). This project treats PaySim as a stand-in for proprie
 transaction data — the analytical *approach* generalizes even though this 2016
 dataset's specific rates don't reflect 2026 UPI infrastructure.
 
+## Core Tech Stack
+*Data Engineering & Querying:* SQLite3, Pandas, NumPy
+
+*Machine Learning:* Scikit-Learn, LightGBM / XGBoost
+
+*Explainability:* SHAP (TreeExplainer)
+
+*Environment:* Python 3.10+, Jupyter / Google Colab
+
+## End-to-End Methodology
+
+```
+6.3M Raw Transactions (CSV)
+            │
+            ▼
+┌───────────────────────────────┐
+│ 1. Exploratory SQL Layer      │ ──► Isolate TRANSFER & CASH_OUT
+│    (SQLite / CTEs / RANK)     │ ──► Reject single-account hypothesis
+└──────────────┬────────────────┘
+               │
+               ▼
+┌───────────────────────────────┐
+│ 2. Feature Engineering        │ ──► Engineer balance delta signals
+│    & Leakage Discovery        │ ──► Identify 'full_drain' synthetic artifact
+└──────────────┬────────────────┘
+               │
+       ┌───────┴────────────────┐
+       ▼                        ▼
+┌──────────────┐         ┌──────────────┐
+│ Model A      │         │ Model B      │
+│ (With Leak)  │         │ (Leak-Free)  │
+│ Recall: 99.7%│         │ Recall: 86.6%│
+└──────────────┘         └──────┬───────┘
+                                │
+                                ▼
+┌───────────────────────────────┐
+│ 3. Model Explainability       │ ──► TreeExplainer SHAP
+│    & Interpretability         │ ──► Reconstructed delta importance
+└──────────────┬────────────────┘
+               │
+               ▼
+┌───────────────────────────────┐
+│ 4. Threshold Optimization     │ ──► Precision target: 95.0%
+│    & Business Calibration     │ ──► Optimal cutoff: 0.864
+└───────────────────────────────┘
+```
+
+
+
 ## Method
 
 **1. Exploratory SQL (SQLite, 6.3M rows):** fraud occurs exclusively in TRANSFER and
