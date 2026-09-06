@@ -13,7 +13,9 @@ Explainability: SHAP (TreeExplainer)
 
 Environment: Python 3.10+, Jupyter / Google Colab
 
-# End-to-End Methodology
+## End-to-End Methodology
+
+```
 6.3M Raw Transactions (CSV)
             │
             ▼
@@ -47,7 +49,6 @@ Environment: Python 3.10+, Jupyter / Google Colab
 │ 4. Threshold Optimization     │ ──► Precision target: 95.0%
 │    & Business Calibration     │ ──► Optimal cutoff: 0.864
 └───────────────────────────────┘
-
 ## Executive Summary & Business Impact
 
 | Metric / Decision Variable | Baseline Rule (`isFlaggedFraud`) | Honest Production Model (Model B @ 0.86 Threshold) | Net Delta / Impact |
