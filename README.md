@@ -4,7 +4,7 @@ SQL-driven exploration, leakage-aware feature engineering, explainable ML, and a
 
 **Dataset:** [PaySim](https://www.kaggle.com/datasets/ealaxi/paysim1) (Kaggle) — 6.3M+ real transactions, standard academic mobile-money fraud benchmark.
 
-# Core Tech Stack
+## Core Tech Stack
 Data Engineering & Querying: SQLite3, Pandas, NumPy
 
 Machine Learning: Scikit-Learn, LightGBM / XGBoost
@@ -49,6 +49,43 @@ Environment: Python 3.10+, Jupyter / Google Colab
 │ 4. Threshold Optimization     │ ──► Precision target: 95.0%
 │    & Business Calibration     │ ──► Optimal cutoff: 0.864
 └───────────────────────────────┘
+```
+
+### 1. Exploratory SQL (SQLite / In-Memory DB)
+* **Transaction Isolation**: Confirmed fraud occurs exclusively in `TRANSFER` and `CASH_OUT` vectors; filtered out non-vulnerable types (`PAYMENT`, `CASH_IN`, `DEBIT`) early to reduce pipeline memory overhead.
+* **Account Dynamics**: Executed window functions (`RANK()`, `ROW_NUMBER()`) and CTEs to analyze sender activity profiles. Disproved the "throwaway account" heuristic—both fraudulent and legitimate sender IDs averaged ~1.0 transactions/account due to the dataset's synthetic generation parameters.
+
+### 2. Feature Engineering & The Leakage Trap
+Two balance-consistency signals were discovered:
+* `full_drain`: Flagging transactions where the sender's entire originating balance was emptied (`oldbalanceOrg - amount == 0`).
+* `dest_no_update`: Flagging transactions where the recipient's balance remained identical post-transaction (`oldbalanceDest == newbalanceDest`).
+
+While `full_drain` accounted for **97.7% of fraud events** and **0.00% of legitimate volume**, it was diagnosed as an artifact of PaySim’s underlying simulator rather than an adversarial invariant.
+
+### 3. Model Leakage Diagnosis (Model A vs. Model B)
+
+| Model Configuration | Recall (Fraud) | Precision (Fraud) | PR-AUC | Diagnosis |
+| :--- | :--- | :--- | :--- | :--- |
+| **Model A** (Includes `full_drain`) | ~99.7% | ~100.0% | 0.9957 | **Severely Leaky**: Overfit to synthetic simulation rules. |
+| **Model B** (Honest Baseline) | **86.6%** | **43.5%** | **0.8564** | **Deployable**: Forces learning from raw continuous deltas. |
+
+### 4. Regulatory Explainability (SHAP)
+Using `shap.TreeExplainer`, feature impact vectors were extracted for Model B:
+* The model independently learned the balance-depletion pattern via `orig_balance_delta` and `oldbalanceOrg` without relying on the hard-coded `full_drain` indicator.
+* Individual alert summaries provide deterministic, compliance-ready explanations for review operations.
+
+### 5. Production Threshold Optimization
+Default classification cutoffs ($p = 0.50$) generate excessive false alarms. The threshold was systematically tuned against precision constraints:
+
+| Precision Target | Attainable Recall | Calibrated Threshold | Operational Context |
+| :--- | :--- | :--- | :--- |
+| **99.0%** | 65.4% | 0.904 | Minimal review capacity; highest cost of manual intervention. |
+| **95.0%** | **71.0%** | **0.864** | **Selected Production Cutoff**: Optimal balance of review volume to fraud capture. |
+| **90.0%** | 75.6% | 0.824 | Moderate fraud prevention prioritization. |
+| **75.0%** | 80.2% | 0.713 | Aggressive risk control. |
+| **50.0%** | 84.8% | 0.550 | Standard model thresholding; review queue bottleneck. |
+
+
 ## Executive Summary & Business Impact
 
 | Metric / Decision Variable | Baseline Rule (`isFlaggedFraud`) | Honest Production Model (Model B @ 0.86 Threshold) | Net Delta / Impact |
