@@ -53,8 +53,8 @@ dataset's specific rates don't reflect 2026 UPI infrastructure.
 │    & Leakage Discovery        │ ──► Identify 'full_drain' synthetic artifact
 └──────────────┬────────────────┘
                │
-       ┌───────┴────────────────┐
-       ▼                        ▼
+       ┌───────┴ 3.──────────────┐
+       ▼                         ▼
 ┌──────────────┐         ┌──────────────┐
 │ Model A      │         │ Model B      │
 │ (With Leak)  │         │ (Leak-Free)  │
@@ -63,13 +63,13 @@ dataset's specific rates don't reflect 2026 UPI infrastructure.
                                 │
                                 ▼
 ┌───────────────────────────────┐
-│ 3. Model Explainability       │ ──► TreeExplainer SHAP
+│ 4. Model Explainability       │ ──► TreeExplainer SHAP
 │    & Interpretability         │ ──► Reconstructed delta importance
 └──────────────┬────────────────┘
                │
                ▼
 ┌───────────────────────────────┐
-│ 4. Threshold Optimization     │ ──► Precision target: 95.0%
+│ 5. Threshold Optimization     │ ──► Precision target: 95.0%
 │    & Business Calibration     │ ──► Optimal cutoff: 0.864
 └───────────────────────────────┘
 ```
